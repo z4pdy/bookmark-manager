@@ -1,0 +1,13 @@
+###
+GET http://localhost:8080/api/bookmarks
+
+###
+POST http://localhost:8080/api/bookmarks
+Content-Type: application/json
+
+{
+    "category": "test category",
+    "title": "test title",
+    "url": "test url",
+
+}
