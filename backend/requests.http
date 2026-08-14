@@ -11,3 +11,17 @@ Content-Type: application/json
     "url": "test url",
 
 }
+
+###
+GET http://localhost:8080/api/users
+
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+    "username": "test username",
+    "email": "test email",
+    "password": "test password",
+
+}
