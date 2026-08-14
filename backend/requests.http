@@ -9,7 +9,6 @@ Content-Type: application/json
     "category": "test category",
     "title": "test title",
     "url": "test url",
-
 }
 
 ###
@@ -23,5 +22,4 @@ Content-Type: application/json
     "username": "test username",
     "email": "test email",
     "password": "test password",
-
 }
