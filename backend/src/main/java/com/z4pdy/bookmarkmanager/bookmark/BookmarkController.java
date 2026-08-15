@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +25,10 @@ public class BookmarkController {
         return bookmarkService.getAll();
     }
 
-    @PostMapping
+    @PostMapping("{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createBookmark(@RequestBody CreateBookmarkRequest request) {
-        bookmarkService.create(request);
+    public void createBookmark(@PathVariable Long userId, @RequestBody CreateBookmarkRequest request) {
+        bookmarkService.create(userId, request);
     }
 
 }
