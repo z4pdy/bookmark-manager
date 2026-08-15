@@ -35,5 +35,19 @@ public class BookmarkService {
         );
         bookmarkRepository.save(bookmark);
 	}
+
+	public List<BookmarkResponse> getBookmarksByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "User " + username + " not found")
+        );
+
+        return bookmarkRepository.findByUser(user).stream().map(bookmark ->
+            new BookmarkResponse(
+                bookmark.getCategory(),
+                bookmark.getTitle(),
+                bookmark.getUrl()
+            )
+        ).toList();
+	}
     
 }

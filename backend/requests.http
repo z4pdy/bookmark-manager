@@ -2,6 +2,9 @@
 GET http://localhost:8080/api/bookmarks
 
 ###
+GET http://localhost:8080/api/bookmarks/test_user
+
+###
 POST http://localhost:8080/api/bookmarks/1
 Content-Type: application/json
 
@@ -19,7 +22,7 @@ POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-    "username": "test username",
+    "username": "test_user",
     "email": "test email",
     "password": "test password",
 }
