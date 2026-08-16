@@ -1,32 +1,30 @@
 package com.z4pdy.bookmarkmanager.user;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class UserService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+@Service
+public class UserService implements UserDetailsService {
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
-	public void register(RegisterUserRequest request) {
-        User user = new User(
-            request.username(),
-            request.email(),
-            passwordEncoder.encode(request.password())
+	@Override
+	public UserPrincipal loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = userRepository.findByUsernameOrEmail(login).orElseThrow(() ->
+            new UsernameNotFoundException(login)
         );
-        userRepository.save(user);
+
+        return new UserPrincipal(user.getId(), user.getUsername(), user.getPassword());
 	}
-    
 }
 
