@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import BookmarksPage from './pages/BookmarksPage'
 import { isLoggedIn, getUser, logout } from "./auth";
 
@@ -24,6 +25,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage/>} />
+            <Route path="/register" element={<RegisterPage/>} />
             <Route path="/u/:username" element={<BookmarksPage/>} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>

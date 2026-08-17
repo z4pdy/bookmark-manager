@@ -8,16 +8,40 @@ export async function login(login, password) {
       "login": login,
       "password": password
     })
-  }).then(async res => {
+  })
+  .then(async res => {
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.message); 
     }
     return res.json()
-  }).then((data) => {
+  })
+  .then((data) => {
     localStorage.setItem("user", JSON.stringify(data));
     window.location.reload();
   })
+}
+
+export async function register(username, email, password) {
+  return fetch("http://localhost:8080/api/auth/register", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({
+      "username": username,
+      "email": email,
+      "password": password
+    })
+  })
+  .then(async res => {
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message);
+    }
+
+    return true;
+  });
 }
 
 export function isLoggedIn() {
