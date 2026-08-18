@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { register } from ".././auth";
+import { register } from "../services/auth";
 
 function RegisterPage() {
   const [info, setInfo] = useState("");

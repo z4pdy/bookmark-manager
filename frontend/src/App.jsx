@@ -2,13 +2,14 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import BookmarksPage from './pages/BookmarksPage'
-import { isLoggedIn, getUser, logout } from "./auth";
-
+import { isLoggedIn, getUser, logout } from "./services/auth";
+import { useState } from "react";
 function App() {
+  const [loggedIn] = useState(() => isLoggedIn());
   return (
     <>
       <header>
-        {isLoggedIn() ? (
+        {loggedIn ? (
           <>
             Hello {getUser().username}
             <button onClick={logout}>Log out</button>

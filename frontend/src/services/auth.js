@@ -1,5 +1,7 @@
+import { API_URL } from "../config/api";
+
 export async function login(login, password) {
-  return fetch("http://localhost:8080/api/auth/login", {
+  return fetch(API_URL + "/auth/login", {
     method: "POST",
     headers: {
       "Content-type": "application/json"
@@ -11,6 +13,16 @@ export async function login(login, password) {
   })
   .then(async res => {
     if (!res.ok) {
+      /*
+      let message = "";
+      try {
+        const error = await res.json();
+        message = error.message;
+      }
+      catch {}
+      throw new Error(message); 
+      */
+
       const error = await res.json();
       throw new Error(error.message); 
     }
@@ -23,7 +35,7 @@ export async function login(login, password) {
 }
 
 export async function register(username, email, password) {
-  return fetch("http://localhost:8080/api/auth/register", {
+  return fetch(API_URL + "/auth/register", {
     method: "POST",
     headers: {
       "Content-type": "application/json"
