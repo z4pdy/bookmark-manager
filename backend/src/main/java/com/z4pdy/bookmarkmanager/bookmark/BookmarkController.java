@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/bookmarks")
 public class BookmarkController {
@@ -33,7 +35,7 @@ public class BookmarkController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void createBookmark(Authentication authentication, @RequestBody CreateBookmarkRequest request) {
+    public void createBookmark(Authentication authentication, @Valid @RequestBody CreateBookmarkRequest request) {
         Long userId = (Long) authentication.getPrincipal();
         bookmarkService.create(userId, request);
     }

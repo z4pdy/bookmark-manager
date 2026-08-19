@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 public class UserAuthController {
@@ -18,13 +20,13 @@ public class UserAuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(@RequestBody RegisterUserRequest request) {
+    public void register(@Valid @RequestBody RegisterUserRequest request) {
         userAuthService.register(request);
     }
     
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.CREATED)
-    public LoginUserResponse login(@RequestBody LoginUserRequest request) {
+    public LoginUserResponse login(@Valid @RequestBody LoginUserRequest request) {
         return userAuthService.login(request);
     }
 }

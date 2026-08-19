@@ -2,10 +2,12 @@ package com.z4pdy.bookmarkmanager.bookmark;
 
 import com.z4pdy.bookmarkmanager.user.User;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -15,10 +17,14 @@ public class Bookmark {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String category;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String url;
     @ManyToOne
+    @JoinColumn(nullable = false, updatable = false)
     private User user;
 
 	public Bookmark() {}

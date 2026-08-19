@@ -2,11 +2,13 @@ package com.z4pdy.bookmarkmanager.user;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,9 +17,14 @@ public class User {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String username;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime creationDate;
     
     public User() {}
@@ -27,11 +34,6 @@ public class User {
 		this.email = email;
 		this.password = password;
 	}
-
-	@PrePersist
-    public void prePersist() {
-        creationDate = LocalDateTime.now();
-    }
 
 	public Long getId() {
 		return id;
