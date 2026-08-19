@@ -1,0 +1,38 @@
+.bookmarks-columns {
+  column-count: 1;
+  column-gap: 1.5rem;
+}
+
+@media (min-width: 576px) {
+  .bookmarks-columns {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 992px) {
+  .bookmarks-columns {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1400px) {
+  .bookmarks-columns {
+    column-count: 4;
+  }
+}
+
+.bookmark-group {
+  break-inside: avoid;
+}
+
+.bookmark-link {
+  color: #C9CBCE;
+  font-size: 0.9rem;
+  text-decoration: none;
+  padding: 3px 0;
+}
+
+.bookmark-link:hover {
+  color: #6C93E8;
+  text-decoration: underline;
+}

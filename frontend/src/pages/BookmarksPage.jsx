@@ -3,13 +3,14 @@ import { useParams } from "react-router-dom";
 import { isLoggedIn } from "../services/auth";
 import { Modal, Button } from "react-bootstrap";
 import { createBookmark, getBookmarks } from "../services/bookmarks";
+import "./BookmarksPage.css";
 
 function BookmarksPage() {
   const [loggedIn] = useState(() => isLoggedIn());
-  const { username } = useParams();
-  const [ bookmarks, setBookmarks ] = useState([]);
-  const [ showModal, setShowModal ] = useState(false);
-  const [ error, setError ] = useState("");
+  const {username} = useParams();
+  const [groupedBookmarks, setGroupedBookmarks] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -26,11 +27,20 @@ function BookmarksPage() {
     })
   };
 
+  function groupBookmarks(bookmarks) {
+    return bookmarks.reduce((groups, bookmark) => {
+      if (!groups[bookmark.category]) {
+        groups[bookmark.category] = [];
+      }
+      groups[bookmark.category].push(bookmark);
+      return groups;
+    }, {});
+  }
+
   function loadBookmarks() {
-    console.log("reload");
     getBookmarks(username)
     .then((data) => {
-      setBookmarks(data);
+      setGroupedBookmarks(groupBookmarks(data));
     })
     .catch(error => {
       console.log(error.message);
@@ -48,51 +58,54 @@ function BookmarksPage() {
   }, []);
 
   return (
-    <>
-      <h1>{username}</h1>
+    <div className="container-fluid px-4 py-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="py-2 h4 fw-semibold mb-0">{username}</h1>
         {loggedIn && (
-          <>
-            <div>
-              <Button onClick={() => setShowModal(true)}>Add bookmark</Button>
-            </div>
-          </>
+          <Button variant="primary" onClick={() => setShowModal(true)}>
+            Create bookmark
+          </Button>
         )}
-      <Modal show={showModal} onHide={closeModal} centered>
+      </div>
+
+      <Modal show={showModal} onHide={closeModal} centered data-bs-theme="dark">
         <form onSubmit={handleSubmit}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add bookmark</Modal.Title>
+          <Modal.Header closeButton className="bg-dark text-light border-secondary-subtle">
+            <Modal.Title>Create bookmark</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body className="bg-dark text-light">
             <input name="category" type="text" className="form-control my-3" placeholder="Category" />
             <input name="title" type="text" className="form-control my-3" placeholder="Title" />
             <input name="url" type="text" className="form-control my-3" placeholder="Url" />
             {error && (
-              <>
-                <div>
-                  {error}
-                </div>
-              </>
+              <div className="alert alert-danger py-2 small mb-0">
+                {error}
+              </div>
             )}
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer className="bg-dark border-secondary-subtle">
             <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-            <Button variant="primary" type="submit">Add</Button>
+            <Button variant="primary" type="submit">Create</Button>
           </Modal.Footer>
         </form>
       </Modal>
-      <div>
-        {bookmarks.map(bookmark => {
-          return (
-            <>
-              <hr />
-              <p>{bookmark.category}</p>
-              <p>{bookmark.title}</p>
-              <p>{bookmark.url}</p>
-            </>
-          )
-        })}
+
+      <div className="bookmarks-columns">
+        {Object.entries(groupedBookmarks).map(([category, bookmarks]) => (
+          <div key={category} className="bookmark-group mb-4">
+            <h2 className="h6 fw-semibold mb-2">{category}</h2>
+            <hr className="border-secondary-subtle mt-0 mb-2" />
+            <div className="d-flex flex-column">
+              {bookmarks.map((bookmark, index) => (
+                <a key={index} href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
+                  {bookmark.title}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-    </>
+    </div>
   )
 }
 export default BookmarksPage;
