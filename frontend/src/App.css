@@ -1,0 +1,11 @@
+.navbar-brand {
+  letter-spacing: -0.02em;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  --bs-btn-bg: #2A5CAA;
+  --bs-btn-border-color: #2A5CAA;
+  --bs-btn-hover-bg: #234C8C;
+  --bs-btn-hover-border-color: #234C8C;
+}
