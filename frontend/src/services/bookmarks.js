@@ -17,7 +17,7 @@ export async function createBookmark(category, title, url) {
     throw new Error("User is not authenticated");  
   }
 
-  return fetch(API_URL + "/bookmarks", {
+  return fetch(`${API_URL}/bookmarks`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
@@ -28,6 +28,26 @@ export async function createBookmark(category, title, url) {
       "title": title,
       "url": url
     })
+  })
+  .then(async res => {
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message);
+    }
+  });
+}
+
+export async function deleteBookmark(bookmarkId) {
+  const user = getUser();
+  if (!user || !user.token) {
+    throw new Error("User is not authenticated");  
+  }
+
+  return fetch(`${API_URL}/bookmarks/${bookmarkId}`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${user.token}`
+    }
   })
   .then(async res => {
     if (!res.ok) {

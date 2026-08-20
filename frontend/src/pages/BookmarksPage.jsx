@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { isLoggedIn } from "../services/auth";
 import { Modal, Button } from "react-bootstrap";
-import { createBookmark, getBookmarks } from "../services/bookmarks";
+import { createBookmark, getBookmarks, deleteBookmark } from "../services/bookmarks";
 import "./BookmarksPage.css";
 
 function BookmarksPage() {
@@ -27,6 +27,16 @@ function BookmarksPage() {
     })
   };
 
+  function handleDelete(bookmarkId) {
+    deleteBookmark(bookmarkId)
+    .then(() => {
+      loadBookmarks();
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
+  };
+
   function groupBookmarks(bookmarks) {
     return bookmarks.reduce((groups, bookmark) => {
       if (!groups[bookmark.category]) {
@@ -45,7 +55,6 @@ function BookmarksPage() {
     .catch(error => {
       console.log(error.message);
     });
-
   }
 
   function closeModal() {
@@ -89,7 +98,6 @@ function BookmarksPage() {
           </Modal.Footer>
         </form>
       </Modal>
-
       <div className="bookmarks-columns">
         {Object.entries(groupedBookmarks).map(([category, bookmarks]) => (
           <div key={category} className="bookmark-group mb-4">
@@ -97,9 +105,22 @@ function BookmarksPage() {
             <hr className="border-secondary-subtle mt-0 mb-2" />
             <div className="d-flex flex-column">
               {bookmarks.map((bookmark, index) => (
-                <a key={index} href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
-                  {bookmark.title}
-                </a>
+                <div key={index} className="d-flex justify-content-between align-items-center bookmark-row">
+                  <a href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
+                    {bookmark.title}
+                  </a>
+                  {loggedIn && (
+
+                    <div className="bookmark-actions">
+                      <button onClick={() => handleEdit(bookmark)} className="bookmark-action-btn">
+                        ✎
+                      </button>
+                      <button onClick={() => handleDelete(bookmark.id)} className="bookmark-action-btn bookmark-delete-btn">
+                        ×
+                      </button>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>
