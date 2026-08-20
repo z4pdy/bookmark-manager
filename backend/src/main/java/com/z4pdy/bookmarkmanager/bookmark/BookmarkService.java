@@ -50,5 +50,16 @@ public class BookmarkService {
             )
         ).toList();
 	}
+
+	public void delete(Long userId, Long bookmarkId) {
+        Bookmark bookmark = bookmarkRepository.findById(bookmarkId).orElseThrow(() -> 
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Bookmark not found with id: " + bookmarkId)
+        );
+
+        if (!bookmark.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot delete this bookmark");
+        }
+        bookmarkRepository.delete(bookmark);
+	}
     
 }

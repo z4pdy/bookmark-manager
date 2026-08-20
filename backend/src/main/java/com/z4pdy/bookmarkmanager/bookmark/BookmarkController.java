@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,11 +34,17 @@ public class BookmarkController {
         return bookmarkService.getBookmarksByUsername(username);
     }
 
-    @PostMapping()
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createBookmark(Authentication authentication, @Valid @RequestBody CreateBookmarkRequest request) {
         Long userId = (Long) authentication.getPrincipal();
         bookmarkService.create(userId, request);
     }
 
+    @DeleteMapping("{bookmarkId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBookmark(Authentication authentication, @PathVariable Long bookmarkId) {
+        Long userId = (Long) authentication.getPrincipal();
+        bookmarkService.delete(userId, bookmarkId);
+    }
 }
