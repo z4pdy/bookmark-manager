@@ -43,6 +43,7 @@ public class BookmarkService {
 
         return bookmarkRepository.findByUser(user).stream().map(bookmark ->
             new BookmarkResponse(
+                bookmark.getId(),
                 bookmark.getCategory(),
                 bookmark.getTitle(),
                 bookmark.getUrl()
