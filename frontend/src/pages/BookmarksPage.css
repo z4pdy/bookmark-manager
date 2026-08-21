@@ -1,24 +1,12 @@
 .bookmarks-columns {
-  column-count: 1;
-  column-gap: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
 }
 
-@media (min-width: 576px) {
-  .bookmarks-columns {
-    column-count: 2;
-  }
-}
-
-@media (min-width: 992px) {
-  .bookmarks-columns {
-    column-count: 3;
-  }
-}
-
-@media (min-width: 1400px) {
-  .bookmarks-columns {
-    column-count: 4;
-  }
+.bookmarks-column {
+  flex: 1;
+  min-width: 0;
 }
 
 .bookmark-group {

@@ -6,6 +6,8 @@ import { createBookmark, getBookmarks, deleteBookmark } from "../services/bookma
 import "./BookmarksPage.css";
 import { useNavigate } from "react-router-dom";
 
+import { useColumnCount, distributeIntoColumns } from "../utils/columnLayout";
+
 function BookmarksPage() {
   const navigate = useNavigate();
 
@@ -14,6 +16,9 @@ function BookmarksPage() {
   const [groupedBookmarks, setGroupedBookmarks] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
+
+  const columnCount = useColumnCount();
+  const columns = distributeIntoColumns(Object.entries(groupedBookmarks), columnCount);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -107,30 +112,33 @@ function BookmarksPage() {
         </form>
       </Modal>
       <div className="bookmarks-columns">
-        {Object.entries(groupedBookmarks).map(([category, bookmarks]) => (
-          <div key={category} className="bookmark-group mb-4">
-            <h2 className="h6 fw-semibold mb-2">{category}</h2>
-            <hr className="border-secondary-subtle mt-0 mb-2" />
-            <div className="d-flex flex-column">
-              {bookmarks.map((bookmark, index) => (
-                <div key={index} className="d-flex justify-content-between align-items-center bookmark-row">
-                  <a href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
-                    {bookmark.title}
-                  </a>
-                  {loggedIn && (
-
-                    <div className="bookmark-actions">
-                      <button onClick={() => handleEdit(bookmark)} className="bookmark-action-btn">
-                        ✎
-                      </button>
-                      <button onClick={() => handleDelete(bookmark.id)} className="bookmark-action-btn bookmark-delete-btn">
-                        ×
-                      </button>
+        {columns.map((column, colIndex) => (
+          <div key={colIndex} className="bookmarks-column">
+            {column.map(([category, bookmarks]) => (
+              <div key={category} className="bookmark-group mb-4">
+                <h2 className="h6 fw-semibold mb-2">{category}</h2>
+                <hr className="border-secondary-subtle mt-0 mb-2" />
+                <div className="d-flex flex-column">
+                  {bookmarks.map((bookmark, index) => (
+                    <div key={index} className="d-flex justify-content-between align-items-center bookmark-row">
+                      <a href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
+                        {bookmark.title}
+                      </a>
+                      {loggedIn && (
+                        <div className="bookmark-actions">
+                          <button onClick={() => handleEdit(bookmark)} className="bookmark-action-btn">
+                            ✎
+                          </button>
+                          <button onClick={() => handleDelete(bookmark.id)} className="bookmark-action-btn bookmark-delete-btn">
+                            ×
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         ))}
       </div>
