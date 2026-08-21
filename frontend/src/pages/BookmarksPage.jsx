@@ -4,8 +4,11 @@ import { isLoggedIn } from "../services/auth";
 import { Modal, Button } from "react-bootstrap";
 import { createBookmark, getBookmarks, deleteBookmark } from "../services/bookmarks";
 import "./BookmarksPage.css";
+import { useNavigate } from "react-router-dom";
 
 function BookmarksPage() {
+  const navigate = useNavigate();
+
   const [loggedIn] = useState(() => isLoggedIn());
   const {username} = useParams();
   const [groupedBookmarks, setGroupedBookmarks] = useState({});
@@ -52,8 +55,13 @@ function BookmarksPage() {
     .then((data) => {
       setGroupedBookmarks(groupBookmarks(data));
     })
-    .catch(error => {
-      console.log(error.message);
+    .catch(res => {
+      if (res.status === 404) {
+        navigate("/login")
+        return;
+      }
+
+      console.log(res);
     });
   }
 

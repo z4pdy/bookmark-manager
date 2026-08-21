@@ -1,14 +1,26 @@
-import { useState } from "react";
-import { login } from "../services/auth";
+import { useState, useEffect } from "react";
+import { getUser, login, isLoggedIn } from "../services/auth";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      navigate(`/u/${getUser().username}`);
+    }
+  }, [navigate]);
+
 
   function handleSubmit(e) {
     e.preventDefault();
 
     const form = new FormData(e.target);
     login(form.get("login"), form.get("password"))
+    .then(() => {
+      window.location.href = `/u/${getUser().username}`;
+    })
     .catch(error => {
       setError(error.message);
     });

@@ -1,9 +1,17 @@
-import { useState } from "react";
-import { register } from "../services/auth";
+import { useState, useEffect } from "react";
+import { register, getUser, isLoggedIn } from "../services/auth";
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
+  const navigate = useNavigate();
   const [info, setInfo] = useState("");
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      navigate(`/u/${getUser().username}`);
+    }
+  }, [navigate]);
 
   function handleSubmit(e) {
     e.preventDefault();

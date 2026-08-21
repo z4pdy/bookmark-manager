@@ -3,9 +3,8 @@ import { getUser } from "./auth";
 
 export async function getBookmarks(username) {
   return fetch(`${API_URL}/bookmarks/${username}`).then(async res => {
-    if (res.status == 404) {
-      const error = await res.json();
-      throw new Error(error.message); 
+    if (!res.ok) {
+      throw res;
     }
     return res.json()
   })

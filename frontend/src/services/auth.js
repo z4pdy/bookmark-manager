@@ -13,24 +13,12 @@ export async function login(login, password) {
   })
   .then(async res => {
     if (!res.ok) {
-      /*
-      let message = "";
-      try {
-        const error = await res.json();
-        message = error.message;
-      }
-      catch {}
-      throw new Error(message); 
-      */
-
       const error = await res.json();
       throw new Error(error.message); 
     }
-    return res.json()
-  })
-  .then((data) => {
+    const data = await res.json();
     localStorage.setItem("user", JSON.stringify(data));
-    window.location.reload();
+    return true
   })
 }
 
@@ -51,7 +39,6 @@ export async function register(username, email, password) {
       const error = await res.json();
       throw new Error(error.message);
     }
-
     return true;
   });
 }
