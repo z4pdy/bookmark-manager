@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.z4pdy.bookmarkmanager.user.User;
 import com.z4pdy.bookmarkmanager.user.UserRepository;
+
+import jakarta.validation.Valid;
 
 @Service
 public class BookmarkService {
@@ -60,6 +63,21 @@ public class BookmarkService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot delete this bookmark");
         }
         bookmarkRepository.delete(bookmark);
+	}
+
+    @Transactional
+	public void update(Long userId, Long bookmarkId, @Valid UpdateBookmarkRequest request) {
+        Bookmark bookmark = bookmarkRepository.findById(bookmarkId).orElseThrow(() -> 
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Bookmark not found with id: " + bookmarkId)
+        );
+
+        if (!bookmark.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot update this bookmark");
+        }
+
+        bookmark.setCategory(request.category());
+        bookmark.setTitle(request.title());
+        bookmark.setUrl(request.url());
 	}
     
 }
