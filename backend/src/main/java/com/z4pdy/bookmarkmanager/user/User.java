@@ -23,6 +23,8 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    private boolean isPublic = true;
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime creationDate;
@@ -62,6 +64,14 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
 
 	public LocalDateTime getCreationDate() {
 		return creationDate;
