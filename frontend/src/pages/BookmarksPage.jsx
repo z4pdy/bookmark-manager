@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { isLoggedIn } from "../services/auth";
+import { getUser, isLoggedIn } from "../services/auth";
 import { Modal, Button } from "react-bootstrap";
 import { editBookmark, createBookmark, getBookmarks, deleteBookmark } from "../services/bookmarks";
 import "./BookmarksPage.css";
@@ -10,15 +10,18 @@ import { useColumnCount, distributeIntoColumns } from "../utils/columnLayout";
 
 function BookmarksPage() {
   const navigate = useNavigate();
-
-  const [loggedIn] = useState(() => isLoggedIn());
   const {username} = useParams();
+  const [isOwner] = useState(() => checkIsOwner());
   const [groupedBookmarks, setGroupedBookmarks] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
   const [editingBookmark, setEditingBookmark] = useState(null);
   const columnCount = useColumnCount();
   const columns = distributeIntoColumns(Object.entries(groupedBookmarks), columnCount);
+
+  function checkIsOwner() {
+    return isLoggedIn() && getUser().username === username;
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -107,13 +110,13 @@ function BookmarksPage() {
 
   useEffect(() => {
     loadBookmarks();
-  }, []);
+  }, [username]);
 
   return (
     <div className="container-fluid px-4 py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="py-2 h4 fw-semibold mb-0">{username}</h1>
-        {loggedIn && (
+        {isOwner && (
           <Button variant="primary" onClick={() => openModal()}>
             Create bookmark
           </Button>
@@ -153,12 +156,12 @@ function BookmarksPage() {
                 <h2 className="h6 fw-semibold mb-2">{category}</h2>
                 <hr className="border-secondary-subtle mt-0 mb-2" />
                 <div className="d-flex flex-column">
-                  {bookmarks.map((bookmark, index) => (
-                    <div key={index} className="d-flex justify-content-between align-items-center bookmark-row">
+                  {bookmarks.map(bookmark => (
+                    <div key={bookmark.id} className="d-flex justify-content-between align-items-center bookmark-row">
                       <a href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
                         {bookmark.title}
                       </a>
-                      {loggedIn && (
+                      {isOwner && (
                         <div className="bookmark-actions">
                           <button onClick={() => openModal(bookmark)} className="bookmark-action-btn">
                             ✎
