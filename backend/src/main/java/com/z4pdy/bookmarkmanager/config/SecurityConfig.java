@@ -19,13 +19,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter, BookmarkAccessManager bookmarkAccessManager) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .cors(cors -> {})
             .authorizeHttpRequests(auth -> 
                 auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().
                 requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/bookmarks/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/bookmarks/{username}").access(bookmarkAccessManager)
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
             )
