@@ -25,11 +25,6 @@ public class BookmarkController {
         this.bookmarkService = bookmarkService;
     }
 
-    @GetMapping
-    public List<Bookmark> getAllBookmarks() {
-        return bookmarkService.getAll();
-    }
-
     @GetMapping("{username}")
     public List<BookmarkResponse> getBookmarksByUsername(@PathVariable String username) {
         return bookmarkService.getBookmarksByUsername(username);

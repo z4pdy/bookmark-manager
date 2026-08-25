@@ -1,8 +1,7 @@
 package com.z4pdy.bookmarkmanager.user;
 
-import java.util.List;
-
 import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +11,6 @@ public class UserService implements UserDetailsService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    public List<User> getAll() {
-        return userRepository.findAll();
     }
 
 	@Override

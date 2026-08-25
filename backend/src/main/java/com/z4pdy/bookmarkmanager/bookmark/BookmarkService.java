@@ -22,10 +22,6 @@ public class BookmarkService {
         this.userRepository = userRepository;
     }
 
-    public List<Bookmark> getAll() {
-        return bookmarkRepository.findAll();
-    }
-
 	public void create(Long userId, CreateBookmarkRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + userId)
