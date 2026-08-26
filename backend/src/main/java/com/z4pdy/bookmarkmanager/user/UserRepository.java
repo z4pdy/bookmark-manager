@@ -10,4 +10,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.username = :login OR u.email = :login")
 	Optional<User> findByUsernameOrEmail(String login);
+
+    @Query("SELECT u.isPublic FROM User u WHERE u.username = :username")
+    boolean getIsPublicByUsername(String username);
 }

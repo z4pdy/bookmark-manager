@@ -50,10 +50,12 @@ public class UserAuthService {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String token = jwtService.generateToken(userPrincipal.getId());
+        boolean isPublic = userRepository.getIsPublicByUsername(userPrincipal.getUsername());
 
         return new LoginUserResponse(
             userPrincipal.getUsername(),
-            token
+            token,
+            isPublic
         );
     }
 

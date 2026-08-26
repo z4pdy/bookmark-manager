@@ -40,10 +40,6 @@ public class BookmarkService {
             new ResponseStatusException(HttpStatus.NOT_FOUND, "User " + username + " not found")
         );
 
-        if (!user.isPublic()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User " + username + " has a private profile");
-        }
-
         return bookmarkRepository.findByUser(user).stream().map(bookmark ->
             new BookmarkResponse(
                 bookmark.getId(),
