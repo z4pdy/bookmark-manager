@@ -2,7 +2,15 @@ import { API_URL } from "../config/api";
 import { getUser } from "./auth";
 
 export async function getBookmarks(username) {
-  return fetch(`${API_URL}/bookmarks/${username}`).then(async res => {
+  const user = getUser();
+  let headers = {};
+  if (user && user.token) {
+    headers.Authorization = `Bearer ${user.token}`;
+  }
+
+  return fetch(`${API_URL}/bookmarks/${username}`, {
+    headers: headers
+  }).then(async res => {
     if (!res.ok) {
       throw res;
     }

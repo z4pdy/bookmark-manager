@@ -17,7 +17,7 @@ export async function login(login, password) {
       throw new Error(error.message); 
     }
     const data = await res.json();
-    localStorage.setItem("user", JSON.stringify(data));
+    saveUser(data)
     return true
   })
 }
@@ -50,6 +50,10 @@ export function isLoggedIn() {
 
   const payload = JSON.parse(atob(user.token.split(".")[1]));
   return payload.exp * 1000 > Date.now();
+}
+
+export function saveUser(user) {
+  localStorage.setItem("user", JSON.stringify(user));
 }
 
 export function getUser() {

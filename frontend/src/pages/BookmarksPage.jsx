@@ -1,23 +1,37 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUser, isLoggedIn } from "../services/auth";
+import { getUser, isLoggedIn, saveUser } from "../services/auth";
 import { Modal, Button } from "react-bootstrap";
 import { editBookmark, createBookmark, getBookmarks, deleteBookmark } from "../services/bookmarks";
 import "./BookmarksPage.css";
 import { useNavigate } from "react-router-dom";
 
 import { useColumnCount, distributeIntoColumns } from "../utils/columnLayout";
+import { updateIsPublic } from "../services/users";
 
 function BookmarksPage() {
+  const [isPublicIndicator, setIsPublicIndicator] = useState(getUser()?.isPublic);
   const navigate = useNavigate();
   const {username} = useParams();
-  const [isOwner] = useState(() => checkIsOwner());
+  const [isOwner, setIsOwner] = useState(() => checkIsOwner());
   const [groupedBookmarks, setGroupedBookmarks] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
   const [editingBookmark, setEditingBookmark] = useState(null);
   const columnCount = useColumnCount();
   const columns = distributeIntoColumns(Object.entries(groupedBookmarks), columnCount);
+
+  function handleVisibilityToggle() {
+    console.log("b" + getUser());
+    const newValue = !isPublicIndicator;
+    setIsPublicIndicator(newValue);
+    updateIsPublic(newValue);
+
+    const user = getUser();
+    user.isPublic = newValue;
+    saveUser(user);
+    console.log("a" + getUser())
+  }
 
   function checkIsOwner() {
     return isLoggedIn() && getUser().username === username;
@@ -110,19 +124,29 @@ function BookmarksPage() {
 
   useEffect(() => {
     loadBookmarks();
+    setIsOwner(checkIsOwner());
   }, [username]);
 
   return (
     <div className="container-fluid px-4 py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="py-2 h4 fw-semibold mb-0">{username}</h1>
+        <div className="d-flex align-items-center gap-4">
+          <h1 className="py-2 h4 fw-semibold mb-0">{username}</h1>
+          {isOwner && (
+            <div className="form-check form-switch mb-0">
+              <input className="form-check-input" type="checkbox" role="switch" id="visibility-switch" checked={isPublicIndicator} onChange={handleVisibilityToggle} />
+              <label className="form-check-label small text-secondary" htmlFor="visibility-switch">
+                {isPublicIndicator ? "Public" : "Private"}
+              </label>
+            </div>
+          )}
+        </div>
         {isOwner && (
           <Button variant="primary" onClick={() => openModal()}>
             Create bookmark
           </Button>
         )}
       </div>
-
       <Modal show={showModal} onHide={closeModal} centered data-bs-theme="dark">
         <form onSubmit={handleSubmit}>
           <Modal.Header closeButton className="bg-dark text-light border-secondary-subtle">
