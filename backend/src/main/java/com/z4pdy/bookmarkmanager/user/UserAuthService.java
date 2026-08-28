@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.z4pdy.bookmarkmanager.config.JwtService;
+import com.z4pdy.bookmarkmanager.security.JwtService;
 
 @Service
 public class UserAuthService {

@@ -1,4 +1,4 @@
-package com.z4pdy.bookmarkmanager.config;
+package com.z4pdy.bookmarkmanager.security;
 
 import java.util.Date;
 
