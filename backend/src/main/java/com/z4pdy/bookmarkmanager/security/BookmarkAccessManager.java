@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.z4pdy.bookmarkmanager.user.User;
 import com.z4pdy.bookmarkmanager.user.UserService;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.authorization.AuthorizationResult;
@@ -38,6 +39,11 @@ public class BookmarkAccessManager implements AuthorizationManager<RequestAuthor
         }
 
         Authentication auth = authentication.get();
+
+        if (auth instanceof AnonymousAuthenticationToken) {
+            return new AuthorizationDecision(false);
+        }
+
         if (auth != null && auth.isAuthenticated()) {
             Long authUserId = (Long) auth.getPrincipal();
             if (user.getId().equals(authUserId)) {
