@@ -26,6 +26,14 @@ public class UserAuthService {
     }
 
 	public void register(RegisterUserRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is taken");
+        }
+
+        if (userRepository.existsByUsername(request.username())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is taken");
+        }
+
         User user = new User(
             request.username(),
             request.email(),

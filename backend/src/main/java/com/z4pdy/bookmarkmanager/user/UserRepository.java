@@ -13,4 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u.isPublic FROM User u WHERE u.username = :username")
     boolean getIsPublicByUsername(String username);
+
+	boolean existsByUsername(String username);
+
+	boolean existsByEmail(String email);
 }
