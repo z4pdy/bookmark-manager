@@ -22,7 +22,6 @@ function BookmarksPage() {
   const columns = distributeIntoColumns(Object.entries(groupedBookmarks), columnCount);
 
   function handleVisibilityToggle() {
-    console.log("b" + getUser());
     const newValue = !isPublicIndicator;
     setIsPublicIndicator(newValue);
     updateIsPublic(newValue);
@@ -30,7 +29,6 @@ function BookmarksPage() {
     const user = getUser();
     user.isPublic = newValue;
     saveUser(user);
-    console.log("a" + getUser())
   }
 
   function checkIsOwner() {
@@ -97,12 +95,10 @@ function BookmarksPage() {
       setGroupedBookmarks(groupBookmarks(data));
     })
     .catch(res => {
-      if (res.status === 404) {
+      if (res.status === 403 || res.status === 404) {
         navigate("/login")
         return;
       }
-
-      console.log(res);
     });
   }
 
