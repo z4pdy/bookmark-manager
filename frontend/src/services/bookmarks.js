@@ -1,5 +1,5 @@
 import { API_URL } from "../config/api";
-import { getUser } from "./auth";
+import { getUser, logout } from "./auth";
 
 export async function getBookmarks(username) {
   const user = getUser();
@@ -10,7 +10,13 @@ export async function getBookmarks(username) {
 
   return fetch(`${API_URL}/bookmarks/${username}`, {
     headers: headers
-  }).then(async res => {
+  })
+  .then(async res => {
+    if (res.status === 401) {
+      logout();
+      return;
+    }
+
     if (!res.ok) {
       throw res;
     }
@@ -37,9 +43,13 @@ export async function createBookmark(category, title, url) {
     })
   })
   .then(async res => {
+    if (res.status === 401) {
+      logout();
+      return;
+    }
+
     if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
+      throw res;
     }
   });
 }
@@ -63,9 +73,13 @@ export async function editBookmark(bookmarkId, category, title, url) {
     })
   })
   .then(async res => {
+    if (res.status === 401) {
+      logout();
+      return;
+    }
+
     if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
+      throw res;
     }
   });
 }
@@ -84,9 +98,13 @@ export async function deleteBookmark(bookmarkId) {
     }
   })
   .then(async res => {
+    if (res.status === 401) {
+      logout();
+      return;
+    }
+
     if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
+      throw res;
     }
   });
 }

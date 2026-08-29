@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUser, isLoggedIn, saveUser } from "../services/auth";
+import { getUser, isLoggedIn, logout, saveUser } from "../services/auth";
 import { Modal, Button } from "react-bootstrap";
 import { editBookmark, createBookmark, getBookmarks, deleteBookmark } from "../services/bookmarks";
 import "./BookmarksPage.css";
@@ -53,8 +53,9 @@ function BookmarksPage() {
       loadBookmarks();
       closeModal();
     })
-    .catch(error => {
-      setError(error.message);
+    .catch(async res => {
+      const resError = await res.json();
+      setError(resError.message);
     })
   }
 
@@ -64,8 +65,9 @@ function BookmarksPage() {
       loadBookmarks();
       closeModal();
     })
-    .catch(error => {
-      setError(error.message);
+    .catch(async res => {
+      const resError = await res.json();
+      setError(resError.message);
     })
   }
 
@@ -73,9 +75,6 @@ function BookmarksPage() {
     deleteBookmark(bookmarkId)
     .then(() => {
       loadBookmarks();
-    })
-    .catch(error => {
-      console.log(error.message);
     })
   };
 
