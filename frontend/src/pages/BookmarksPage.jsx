@@ -178,6 +178,12 @@ function BookmarksPage() {
                   {bookmarks.map(bookmark => (
                     <div key={bookmark.id} className="d-flex justify-content-between align-items-center bookmark-row">
                       <a href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
+                        <img
+                          src={`https://www.google.com/s2/favicons?domain=${new URL(bookmark.url).hostname}&sz=32`}
+                          alt=""
+                          className="bookmark-favicon"
+                          onError={(e) => { e.target.style.visibility = "hidden"; }}
+                        />
                         {bookmark.title}
                       </a>
                       {isOwner && (
