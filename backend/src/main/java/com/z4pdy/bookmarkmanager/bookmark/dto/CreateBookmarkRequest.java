@@ -1,4 +1,4 @@
-package com.z4pdy.bookmarkmanager.bookmark;
+package com.z4pdy.bookmarkmanager.bookmark.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

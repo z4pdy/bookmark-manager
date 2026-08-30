@@ -13,6 +13,9 @@ import com.z4pdy.bookmarkmanager.security.JwtService;
 import com.z4pdy.bookmarkmanager.user.User;
 import com.z4pdy.bookmarkmanager.user.UserPrincipal;
 import com.z4pdy.bookmarkmanager.user.UserRepository;
+import com.z4pdy.bookmarkmanager.user.auth.dto.LoginUserRequest;
+import com.z4pdy.bookmarkmanager.user.auth.dto.LoginUserResponse;
+import com.z4pdy.bookmarkmanager.user.auth.dto.RegisterUserRequest;
 
 @Service
 public class UserAuthService {

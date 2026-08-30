@@ -1,4 +1,4 @@
-package com.z4pdy.bookmarkmanager.user.auth;
+package com.z4pdy.bookmarkmanager.user.auth.dto;
 
 public record LoginUserResponse(
     String username,

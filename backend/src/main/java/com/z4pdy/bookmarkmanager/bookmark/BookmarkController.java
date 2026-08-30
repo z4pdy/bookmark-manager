@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.z4pdy.bookmarkmanager.bookmark.dto.BookmarkResponse;
+import com.z4pdy.bookmarkmanager.bookmark.dto.CreateBookmarkRequest;
+import com.z4pdy.bookmarkmanager.bookmark.dto.UpdateBookmarkRequest;
+
 import jakarta.validation.Valid;
 
 @RestController

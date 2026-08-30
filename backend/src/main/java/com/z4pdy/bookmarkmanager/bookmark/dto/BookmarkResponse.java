@@ -1,4 +1,4 @@
-package com.z4pdy.bookmarkmanager.bookmark;
+package com.z4pdy.bookmarkmanager.bookmark.dto;
 
 public record BookmarkResponse(
     Long id,

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.z4pdy.bookmarkmanager.bookmark.dto.BookmarkResponse;
+import com.z4pdy.bookmarkmanager.bookmark.dto.CreateBookmarkRequest;
+import com.z4pdy.bookmarkmanager.bookmark.dto.UpdateBookmarkRequest;
 import com.z4pdy.bookmarkmanager.user.User;
 import com.z4pdy.bookmarkmanager.user.UserRepository;
 
