@@ -1,4 +1,4 @@
-package com.z4pdy.bookmarkmanager.user;
+package com.z4pdy.bookmarkmanager.user.auth;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.z4pdy.bookmarkmanager.security.JwtService;
+import com.z4pdy.bookmarkmanager.user.User;
+import com.z4pdy.bookmarkmanager.user.UserPrincipal;
+import com.z4pdy.bookmarkmanager.user.UserRepository;
 
 @Service
 public class UserAuthService {

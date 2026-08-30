@@ -1,4 +1,4 @@
-package com.z4pdy.bookmarkmanager.user;
+package com.z4pdy.bookmarkmanager.user.auth;
 
 import jakarta.validation.constraints.NotBlank;
 
