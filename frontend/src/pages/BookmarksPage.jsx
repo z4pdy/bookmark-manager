@@ -53,9 +53,8 @@ function BookmarksPage() {
       loadBookmarks();
       closeModal();
     })
-    .catch(async res => {
-      const resError = await res.json();
-      setError(resError.message);
+    .catch(err => {
+      setError(err.message);
     })
   }
 
@@ -65,9 +64,8 @@ function BookmarksPage() {
       loadBookmarks();
       closeModal();
     })
-    .catch(async res => {
-      const resError = await res.json();
-      setError(resError.message);
+    .catch(err => {
+      setError(err.message);
     })
   }
 
@@ -93,8 +91,8 @@ function BookmarksPage() {
     .then((data) => {
       setGroupedBookmarks(groupBookmarks(data));
     })
-    .catch(res => {
-      if (res.status === 403 || res.status === 404) {
+    .catch(err => {
+      if (err.status === 403 || err.status === 404) {
         navigate("/login")
         return;
       }

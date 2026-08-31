@@ -27,8 +27,8 @@ function RegisterPage() {
       setInfo("Account created successfully");
       setSuccess(true);
     })
-    .catch(error => {
-      setInfo(error.message);
+    .catch(err => {
+      setInfo(err.message);
     })
   };
 

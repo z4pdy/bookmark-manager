@@ -1,21 +1,15 @@
 import { API_URL } from "../config/api";
+import { apiFetch } from "./api";
 
 export async function login(login, password) {
-  return fetch(API_URL + "/auth/login", {
+  return apiFetch(API_URL + "/auth/login", {
     method: "POST",
-    headers: {
-      "Content-type": "application/json"
-    },
     body: JSON.stringify({
       "login": login,
       "password": password
     })
-  })
+  }, false)
   .then(async res => {
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message); 
-    }
     const data = await res.json();
     saveUser(data)
     return true
@@ -23,22 +17,15 @@ export async function login(login, password) {
 }
 
 export async function register(username, email, password) {
-  return fetch(API_URL + "/auth/register", {
+  return apiFetch(API_URL + "/auth/register", {
     method: "POST",
-    headers: {
-      "Content-type": "application/json"
-    },
     body: JSON.stringify({
       "username": username,
       "email": email,
       "password": password
     })
-  })
-  .then(async res => {
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
-    }
+  }, false)
+  .then(() => {
     return true;
   });
 }

@@ -21,8 +21,8 @@ function LoginPage() {
     .then(() => {
       window.location.href = `/u/${getUser().username}`;
     })
-    .catch(error => {
-      setError(error.message);
+    .catch(err => {
+      setError(err.message);
     });
   };
 
