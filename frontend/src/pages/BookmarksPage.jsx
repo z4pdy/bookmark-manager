@@ -9,6 +9,7 @@ import Fuse from "fuse.js";
 
 import { useColumnCount, distributeIntoColumns } from "../utils/columnLayout";
 import { updateIsPublic } from "../services/users";
+import Favicon from "../components/Favicon";
 
 function BookmarksPage() {
   const [isPublicIndicator, setIsPublicIndicator] = useState(getUser()?.isPublic);
@@ -244,12 +245,7 @@ function BookmarksPage() {
                 <a key={bookmark.id} href={bookmark.url} target="_blank" rel="noopener noreferrer" 
                   className={`search-result-item ${index === selectedIndex ? "search-result-item-active" : ""}`}
                 >
-                  <img
-                    src={`https://www.google.com/s2/favicons?domain=${new URL(bookmark.url).hostname}&sz=32`}
-                    alt=""
-                    className="bookmark-favicon"
-                    onError={(e) => { e.target.style.visibility = "hidden"; }}
-                  />
+                  <Favicon url={bookmark.url} />
                   <span className="search-result-path">{bookmark.path}</span>
                 </a>
               ))
@@ -294,12 +290,7 @@ function BookmarksPage() {
                   {bookmarks.map(bookmark => (
                     <div key={bookmark.id} className="d-flex justify-content-between align-items-center bookmark-row">
                       <a href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
-                        <img
-                          src={`https://www.google.com/s2/favicons?domain=${new URL(bookmark.url).hostname}&sz=32`}
-                          alt=""
-                          className="bookmark-favicon"
-                          onError={(e) => { e.target.style.visibility = "hidden"; }}
-                        />
+                        <Favicon url={bookmark.url} />
                         {bookmark.title}
                       </a>
                       {isOwner && (
