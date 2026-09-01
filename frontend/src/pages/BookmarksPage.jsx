@@ -10,6 +10,7 @@ import Fuse from "fuse.js";
 import { useColumnCount, distributeIntoColumns } from "../utils/columnLayout";
 import { updateIsPublic } from "../services/users";
 import Favicon from "../components/Favicon";
+import { normalizeUrl } from "../utils/url";
 
 function BookmarksPage() {
   const [isPublicIndicator, setIsPublicIndicator] = useState(getUser()?.isPublic);
@@ -26,7 +27,7 @@ function BookmarksPage() {
   const columnCount = useColumnCount();
   const columns = distributeIntoColumns(Object.entries(groupedBookmarks), columnCount);
 
-  const allBookmarks = useMemo(() => {
+  const bookmarksForSearch = useMemo(() => {
     return Object.values(groupedBookmarks)
       .flat()
       .map(bookmark => ({
@@ -36,20 +37,20 @@ function BookmarksPage() {
   }, [groupedBookmarks]);
 
   const fuse = useMemo(() => {
-    return new Fuse(allBookmarks, {
+    return new Fuse(bookmarksForSearch, {
       keys: ["path"],
       threshold: 0.35,
       ignoreLocation: true,
     });
-  }, [allBookmarks]);
+  }, [bookmarksForSearch]);
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {
-      return allBookmarks;
+      return bookmarksForSearch;
     }
 
     return fuse.search(searchQuery).map(result => result.item);
-  }, [searchQuery, fuse, allBookmarks]);
+  }, [searchQuery, fuse, bookmarksForSearch]);
 
   function handleVisibilityToggle() {
     const newValue = !isPublicIndicator;
@@ -242,7 +243,7 @@ function BookmarksPage() {
                 <div className="search-results-empty">No results found</div>
               ) : (
               searchResults.map((bookmark, index) => (
-                <a key={bookmark.id} href={bookmark.url} target="_blank" rel="noopener noreferrer" 
+                <a key={bookmark.id} href={normalizeUrl(bookmark.url)} target="_blank" rel="noopener noreferrer"
                   className={`search-result-item ${index === selectedIndex ? "search-result-item-active" : ""}`}
                 >
                   <Favicon url={bookmark.url} />
@@ -289,7 +290,7 @@ function BookmarksPage() {
                 <div className="d-flex flex-column">
                   {bookmarks.map(bookmark => (
                     <div key={bookmark.id} className="d-flex justify-content-between align-items-center bookmark-row">
-                      <a href={bookmark.url} target="_blank" rel="noopener noreferrer" className="bookmark-link">
+                      <a href={normalizeUrl(bookmark.url)} target="_blank" rel="noopener noreferrer" className="bookmark-link">
                         <Favicon url={bookmark.url} />
                         {bookmark.title}
                       </a>
