@@ -6,7 +6,6 @@ import { editBookmark, createBookmark, getBookmarks, deleteBookmark } from "../s
 import "./BookmarksPage.css";
 import { useNavigate } from "react-router-dom";
 import Fuse from "fuse.js";
-
 import { useColumnCount, distributeIntoColumns } from "../utils/columnLayout";
 import { updateIsPublic } from "../services/users";
 import Favicon from "../components/Favicon";
@@ -263,7 +262,14 @@ function BookmarksPage() {
           </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-dark text-light">
-            <input name="category" type="text" className="form-control my-3" placeholder="Category" defaultValue={editingBookmark?.category || ""} />
+            <input name="category" type="text" className="form-control my-3" placeholder="Category" 
+              defaultValue={editingBookmark?.category || ""} list="category-options" autoComplete="off"
+            />
+            <datalist id="category-options">
+              {Object.keys(groupedBookmarks).map((category) => (
+                <option key={category} value={category} />
+              ))}
+            </datalist>
             <input name="title" type="text" className="form-control my-3" placeholder="Title" defaultValue={editingBookmark?.title || ""} />
             <input name="url" type="text" className="form-control my-3" placeholder="Url" defaultValue={editingBookmark?.url || ""} />
             {error && (
