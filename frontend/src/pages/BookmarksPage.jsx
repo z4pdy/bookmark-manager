@@ -5,12 +5,11 @@ import { Modal, Button } from "react-bootstrap";
 import { editBookmark, createBookmark, getBookmarks, deleteBookmark } from "../services/bookmarks";
 import "./BookmarksPage.css";
 import { useNavigate } from "react-router-dom";
-import Fuse from "fuse.js";
 import { useColumnCount, distributeIntoColumns } from "../utils/columnLayout";
 import { updateIsPublic } from "../services/users";
 import Favicon from "../components/Favicon";
+import SearchBookmarksModal from "../components/SearchBookmarksModal";
 import { normalizeUrl } from "../utils/url";
-
 function BookmarksPage() {
   const [isPublicIndicator, setIsPublicIndicator] = useState(getUser()?.isPublic);
   const navigate = useNavigate();
@@ -21,8 +20,6 @@ function BookmarksPage() {
   const [error, setError] = useState("");
   const [editingBookmark, setEditingBookmark] = useState(null);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const columnCount = useColumnCount();
   const columns = distributeIntoColumns(Object.entries(groupedBookmarks), columnCount);
 
@@ -35,21 +32,6 @@ function BookmarksPage() {
       }));
   }, [groupedBookmarks]);
 
-  const fuse = useMemo(() => {
-    return new Fuse(bookmarksForSearch, {
-      keys: ["path"],
-      threshold: 0.35,
-      ignoreLocation: true,
-    });
-  }, [bookmarksForSearch]);
-
-  const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return bookmarksForSearch;
-    }
-
-    return fuse.search(searchQuery).map(result => result.item);
-  }, [searchQuery, fuse, bookmarksForSearch]);
 
   function handleVisibilityToggle() {
     const newValue = !isPublicIndicator;
@@ -60,10 +42,6 @@ function BookmarksPage() {
     user.isPublic = newValue;
     saveUser(user);
   }
-
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [searchQuery]);
 
   function checkIsOwner() {
     return isLoggedIn() && getUser().username === username;
@@ -149,11 +127,6 @@ function BookmarksPage() {
     setError("");
   }
 
-  function closeSearchModal() {
-    setShowSearchModal(false);
-    setSearchQuery("");
-  }
-
   useEffect(() => {
     loadBookmarks();
     setIsOwner(checkIsOwner());
@@ -167,28 +140,10 @@ function BookmarksPage() {
         return;
       }
 
-      if (!showSearchModal) return;
-
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setSelectedIndex(prev => Math.min(prev + 1, searchResults.length - 1));
-      }
-      if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setSelectedIndex(prev => Math.max(prev - 1, 0));
-      }
-      if (e.key === "Enter") {
-        e.preventDefault();
-        const selectedBookmark = searchResults[selectedIndex];
-        if (selectedBookmark) {
-          window.open(selectedBookmark.url, "_blank", "noopener,noreferrer");
-          closeSearchModal();
-        }
-      }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [showSearchModal, searchResults, selectedIndex]);
+  }, [showSearchModal]);
 
   return (
     <div className="container-fluid px-4 py-4">
@@ -220,40 +175,7 @@ function BookmarksPage() {
           )}
         </div>
       </div>
-
-      <Modal show={showSearchModal} onHide={closeSearchModal} data-bs-theme="dark" dialogClassName="search-modal-dialog">
-        <div className="search-modal-box">
-          <div className="d-flex align-items-center gap-2 px-3 py-2 border-bottom border-secondary-subtle">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input
-              type="text"
-              className="form-control bg-dark text-light border-0 shadow-none"
-              placeholder="Search category/title..."
-              autoFocus
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-            <div className="search-results">
-              {searchResults.length === 0 ? (
-                <div className="search-results-empty">No results found</div>
-              ) : (
-              searchResults.map((bookmark, index) => (
-                <a key={bookmark.id} href={normalizeUrl(bookmark.url)} target="_blank" rel="noopener noreferrer"
-                  className={`search-result-item ${index === selectedIndex ? "search-result-item-active" : ""}`}
-                >
-                  <Favicon url={bookmark.url} />
-                  <span className="search-result-path">{bookmark.path}</span>
-                </a>
-              ))
-            )}
-          </div>
-        </div>
-      </Modal>
-
+      <SearchBookmarksModal show={showSearchModal} setShow={setShowSearchModal} bookmarksForSearch={bookmarksForSearch} />
       <Modal show={showModal} onHide={closeModal} centered data-bs-theme="dark">
         <form onSubmit={handleSubmit}>
           <Modal.Header closeButton className="bg-dark text-light border-secondary-subtle">
