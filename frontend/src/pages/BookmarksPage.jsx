@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { getUser, isLoggedIn, saveUser } from "../services/auth";
-import { Modal, Button } from "react-bootstrap";
-import { editBookmark, createBookmark, getBookmarks, deleteBookmark } from "../services/bookmarks";
+import { Button } from "react-bootstrap";
+import { getBookmarks, deleteBookmark } from "../services/bookmarks";
 import "./BookmarksPage.css";
 import { useNavigate } from "react-router-dom";
 import { useColumnCount, distributeIntoColumns } from "../utils/columnLayout";
@@ -10,6 +10,8 @@ import { updateIsPublic } from "../services/users";
 import Favicon from "../components/Favicon";
 import SearchBookmarksModal from "../components/SearchBookmarksModal";
 import { normalizeUrl } from "../utils/url";
+import BookmarkFormModal from "../components/BookmarkFormModal";
+
 function BookmarksPage() {
   const [isPublicIndicator, setIsPublicIndicator] = useState(getUser()?.isPublic);
   const navigate = useNavigate();
@@ -17,7 +19,6 @@ function BookmarksPage() {
   const [isOwner, setIsOwner] = useState(() => checkIsOwner());
   const [groupedBookmarks, setGroupedBookmarks] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const [error, setError] = useState("");
   const [editingBookmark, setEditingBookmark] = useState(null);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const columnCount = useColumnCount();
@@ -45,40 +46,6 @@ function BookmarksPage() {
 
   function checkIsOwner() {
     return isLoggedIn() && getUser().username === username;
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    const form = new FormData(e.target);
-
-    if (editingBookmark) {
-      handleEdit(form.get("category"), form.get("title"), form.get("url"))
-    }
-    else {
-      handleCreate(form.get("category"), form.get("title"), form.get("url"))
-    }
-  };
-
-  function handleCreate(category, title, url) {
-    createBookmark(category, title, url)
-    .then(() => {
-      loadBookmarks();
-      closeModal();
-    })
-    .catch(err => {
-      setError(err.message);
-    })
-  }
-
-  function handleEdit(category, title, url) {
-    editBookmark(editingBookmark.id, category, title, url)
-    .then(() => {
-      loadBookmarks();
-      closeModal();
-    })
-    .catch(err => {
-      setError(err.message);
-    })
   }
 
   function handleDelete(bookmarkId) {
@@ -119,12 +86,6 @@ function BookmarksPage() {
       setEditingBookmark(null);
     }
     setShowModal(true);
-  }
-
-  function closeModal() {
-    setShowModal(false);
-    setEditingBookmark(null)
-    setError("");
   }
 
   useEffect(() => {
@@ -176,38 +137,7 @@ function BookmarksPage() {
         </div>
       </div>
       <SearchBookmarksModal show={showSearchModal} setShow={setShowSearchModal} bookmarksForSearch={bookmarksForSearch} />
-      <Modal show={showModal} onHide={closeModal} centered data-bs-theme="dark">
-        <form onSubmit={handleSubmit}>
-          <Modal.Header closeButton className="bg-dark text-light border-secondary-subtle">
-            <Modal.Title>
-              {editingBookmark ? "Edit bookmark" : "Create bookmark"}
-          </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="bg-dark text-light">
-            <input name="category" type="text" className="form-control my-3" placeholder="Category" 
-              defaultValue={editingBookmark?.category || ""} list="category-options" autoComplete="off"
-            />
-            <datalist id="category-options">
-              {Object.keys(groupedBookmarks).map((category) => (
-                <option key={category} value={category} />
-              ))}
-            </datalist>
-            <input name="title" type="text" className="form-control my-3" placeholder="Title" defaultValue={editingBookmark?.title || ""} />
-            <input name="url" type="text" className="form-control my-3" placeholder="Url" defaultValue={editingBookmark?.url || ""} />
-            {error && (
-              <div className="alert alert-danger py-2 small mb-0">
-                {error}
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer className="bg-dark border-secondary-subtle">
-            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-            <Button variant="primary" type="submit">
-              {editingBookmark ? "Edit" : "Create"}
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
+      <BookmarkFormModal show={showModal} setShow={setShowModal} loadBookmarks={loadBookmarks} editingBookmark={editingBookmark} setEditingBookmark={setEditingBookmark} categories={Object.keys(groupedBookmarks)} />
       <div className="bookmarks-columns">
         {columns.map((column, colIndex) => (
           <div key={colIndex} className="bookmarks-column">
