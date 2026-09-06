@@ -1,5 +1,5 @@
 import { API_URL } from "../config/api";
-import { getUser, logout } from "./auth";
+import { getUser } from "./auth";
 import { apiFetch } from "./api"
 
 export async function getBookmarks(username) {
@@ -40,9 +40,19 @@ export async function editBookmark(bookmarkId, category, title, url) {
   })
 }
 
-
 export async function deleteBookmark(bookmarkId) {
   return apiFetch(`${API_URL}/bookmarks/${bookmarkId}`, {
     method: "DELETE",
+  })
+}
+
+
+export async function renameCategory(category, newCategory) {
+  return apiFetch(`${API_URL}/bookmarks/categories`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      "category": category,
+      "newCategory": newCategory,
+    })
   })
 }

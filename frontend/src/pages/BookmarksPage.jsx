@@ -11,6 +11,7 @@ import Favicon from "../components/Favicon";
 import SearchBookmarksModal from "../components/SearchBookmarksModal";
 import { normalizeUrl } from "../utils/url";
 import BookmarkFormModal from "../components/BookmarkFormModal";
+import BookmarkCategoryRenameModal from "../components/BookmarkCategoryRenameModal";
 
 function BookmarksPage() {
   const [isPublicIndicator, setIsPublicIndicator] = useState(getUser()?.isPublic);
@@ -18,8 +19,10 @@ function BookmarksPage() {
   const {username} = useParams();
   const [isOwner, setIsOwner] = useState(() => checkIsOwner());
   const [groupedBookmarks, setGroupedBookmarks] = useState({});
-  const [showModal, setShowModal] = useState(false);
+  const [showBookmarkCategoryRenameModal, setShowBookmarkCategoryRenameModal] = useState(false);
+  const [showBookmarkFormModal, setShowBookmarkFormModal] = useState(false);
   const [editingBookmark, setEditingBookmark] = useState(null);
+  const [renamingCategory, setRenamingCategory] = useState(null);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const columnCount = useColumnCount();
   const columns = distributeIntoColumns(Object.entries(groupedBookmarks), columnCount);
@@ -78,14 +81,20 @@ function BookmarksPage() {
     });
   }
 
-  function openModal(bookmark) {
+  function openCategoryRenameModal(bookmark) {
+    setRenamingCategory(bookmark);
+    setShowBookmarkCategoryRenameModal(true);
+  }
+
+
+  function openBookmarkFormModal(bookmark) {
     if (bookmark) {
       setEditingBookmark(bookmark);
     }
     else {
       setEditingBookmark(null);
     }
-    setShowModal(true);
+    setShowBookmarkFormModal(true);
   }
 
   useEffect(() => {
@@ -130,20 +139,32 @@ function BookmarksPage() {
             <kbd className="search-trigger-kbd">Ctrl K</kbd>
           </button>
           {isOwner && (
-            <Button variant="primary" onClick={() => openModal()}>
+            <Button variant="primary" onClick={() => openBookmarkFormModal()}>
               Create bookmark
             </Button>
           )}
         </div>
       </div>
       <SearchBookmarksModal show={showSearchModal} setShow={setShowSearchModal} bookmarksForSearch={bookmarksForSearch} />
-      <BookmarkFormModal show={showModal} setShow={setShowModal} loadBookmarks={loadBookmarks} editingBookmark={editingBookmark} setEditingBookmark={setEditingBookmark} categories={Object.keys(groupedBookmarks)} />
+      <BookmarkFormModal show={showBookmarkFormModal} setShow={setShowBookmarkFormModal} loadBookmarks={loadBookmarks} 
+        editingBookmark={editingBookmark} setEditingBookmark={setEditingBookmark} categories={Object.keys(groupedBookmarks)} 
+      />
+      <BookmarkCategoryRenameModal show={showBookmarkCategoryRenameModal} setShow={setShowBookmarkCategoryRenameModal} loadBookmarks={loadBookmarks} 
+        category={renamingCategory} 
+      />
       <div className="bookmarks-columns">
         {columns.map((column, colIndex) => (
           <div key={colIndex} className="bookmarks-column">
             {column.map(([category, bookmarks]) => (
               <div key={category} className="bookmark-group mb-4">
-                <h2 className="h6 fw-semibold mb-2">{category}</h2>
+                <div className="bookmark-group-header">
+                  <h2 className="h6 fw-semibold mb-2">{category}</h2>
+                  {isOwner && (
+                    <button onClick={() => openCategoryRenameModal(category)} className="bookmark-action-btn category-edit-btn">
+                      ✎
+                    </button>
+                  )}
+                </div>
                 <hr className="border-secondary-subtle mt-0 mb-2" />
                 <div className="d-flex flex-column">
                   {bookmarks.map(bookmark => (
@@ -154,7 +175,7 @@ function BookmarksPage() {
                       </a>
                       {isOwner && (
                         <div className="bookmark-actions">
-                          <button onClick={() => openModal(bookmark)} className="bookmark-action-btn">
+                          <button onClick={() => openBookmarkFormModal(bookmark)} className="bookmark-action-btn">
                             ✎
                           </button>
                           <button onClick={() => handleDelete(bookmark.id)} className="bookmark-action-btn bookmark-delete-btn">

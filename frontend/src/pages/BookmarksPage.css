@@ -178,3 +178,17 @@
 .search-result-item-active {
   background: #33363B;
 }
+
+.bookmark-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.category-edit-btn {
+  opacity: 0;
+  transition: opacity 0.12s ease, color 0.12s ease;
+}
+.bookmark-group-header:hover .category-edit-btn {
+  opacity: 1;
+}
