@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.z4pdy.bookmarkmanager.bookmark.dto.BookmarkResponse;
 import com.z4pdy.bookmarkmanager.bookmark.dto.CreateBookmarkRequest;
+import com.z4pdy.bookmarkmanager.bookmark.dto.RenameCategoryRequest;
 import com.z4pdy.bookmarkmanager.bookmark.dto.UpdateBookmarkRequest;
 import com.z4pdy.bookmarkmanager.user.User;
 import com.z4pdy.bookmarkmanager.user.UserRepository;
@@ -78,5 +79,9 @@ public class BookmarkService {
         bookmark.setTitle(request.title());
         bookmark.setUrl(request.url());
 	}
-    
+
+    @Transactional
+	public void renameCategory(Long userId, @Valid RenameCategoryRequest request) {
+        bookmarkRepository.renameCategory(userId, request.category(), request.newCategory());
+	}
 }

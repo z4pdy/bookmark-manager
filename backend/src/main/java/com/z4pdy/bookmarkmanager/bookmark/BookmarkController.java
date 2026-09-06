@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.z4pdy.bookmarkmanager.bookmark.dto.BookmarkResponse;
 import com.z4pdy.bookmarkmanager.bookmark.dto.CreateBookmarkRequest;
+import com.z4pdy.bookmarkmanager.bookmark.dto.RenameCategoryRequest;
 import com.z4pdy.bookmarkmanager.bookmark.dto.UpdateBookmarkRequest;
 
 import jakarta.validation.Valid;
@@ -53,5 +55,12 @@ public class BookmarkController {
     public void updateBookmark(Authentication authentication, @PathVariable Long bookmarkId, @Valid @RequestBody UpdateBookmarkRequest request) {
         Long userId = (Long) authentication.getPrincipal();
         bookmarkService.update(userId, bookmarkId, request);
+    }
+
+    @PatchMapping("/categories")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void renameCategory(Authentication authentication, @Valid @RequestBody RenameCategoryRequest request) {
+        Long userId = (Long) authentication.getPrincipal();
+        bookmarkService.renameCategory(userId, request);
     }
 }
