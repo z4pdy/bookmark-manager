@@ -28,7 +28,7 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
-    void shouldThrowExceptionWhenUserDoesNotExistWhileLoading() {
+    void shouldThrowExceptionWhenUserDoesNotExistWhenLoading() {
         when(userRepository.findByUsernameOrEmail("not-existing-username")).thenReturn(Optional.empty());
         assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("not-existing-username"));
     }
@@ -52,7 +52,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUserDoesNotExistWhileUpdatingIsPublic() {
+    void shouldThrowExceptionWhenUserDoesNotExistWhenUpdatingIsPublic() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(ResponseStatusException.class, () -> userService.updateIsPublic(1L, true));
     }
