@@ -158,7 +158,7 @@ function BookmarksPage() {
             {column.map(([category, bookmarks]) => (
               <div key={category} className="bookmark-group mb-4">
                 <div className="bookmark-group-header">
-                  <h2 className="h6 fw-semibold mb-2">{category}</h2>
+                  <h2 className="h6 fw-semibold mb-2">{category || "\u00A0"}</h2>
                   {isOwner && (
                     <button onClick={() => openCategoryRenameModal(category)} className="bookmark-action-btn category-edit-btn">
                       ✎
