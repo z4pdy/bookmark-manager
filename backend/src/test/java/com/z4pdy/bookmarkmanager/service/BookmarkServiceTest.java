@@ -1,4 +1,4 @@
-package com.z4pdy.bookmarkmanager;
+package com.z4pdy.bookmarkmanager.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
