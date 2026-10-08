@@ -29,7 +29,7 @@ public class UserAuthController {
     }
     
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public LoginUserResponse login(@Valid @RequestBody LoginUserRequest request) {
         return userAuthService.login(request);
     }
